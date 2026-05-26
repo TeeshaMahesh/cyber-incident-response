@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberIRS — Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f5f3ff;
+  color: #1e0a42;
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; font-weight: 700;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse at 20% 20%, rgba(124,58,237,0.10) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 80%, rgba(76,29,149,0.07) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
+}
+.login-wrap { width:100%; max-width:420px; position:relative; z-index:1; }
+.brand { text-align:center; margin-bottom:28px; }
+.brand-logo {
+  width:70px; height:70px; background:#2e1065;
+  border: 2px solid #5b21b6; border-radius:20px;
+  display:inline-flex; align-items:center; justify-content:center;
+  margin-bottom:16px; box-shadow:0 8px 30px rgba(76,29,149,0.25);
+}
+.brand-logo svg { color:white; }
+.brand-name { font-size:28px; font-weight:900; color:#2e1065; letter-spacing:2px; }
+.brand-sub  { font-size:12px; font-weight:800; color:#7c3aed; margin-top:6px; letter-spacing:2px; text-transform:uppercase; }
+
+.card {
+  background:white; border:2px solid #c4b5fd;
+  border-radius:20px; padding:34px 30px;
+  box-shadow:0 8px 40px rgba(124,58,237,0.12);
+}
+.card-title { font-size:18px; font-weight:900; color:#1e0a42; margin-bottom:4px; }
+.card-sub   { font-size:12px; font-weight:700; color:#7c3aed; margin-bottom:24px; }
+
+.form-group { margin-bottom:16px; }
+label { display:block; font-size:12px; font-weight:900; color:#2e1065; margin-bottom:7px; letter-spacing:.5px; text-transform:uppercase; }
+input[type="text"], input[type="password"] {
+  width:100%; padding:11px 14px; font-size:14px; font-weight:700;
+  font-family:'Poppins',sans-serif;
+  background:white; border:2px solid #c4b5fd;
+  border-radius:10px; color:#1e0a42; outline:none;
+  transition:border-color .2s, box-shadow .2s;
+}
+input:focus { border-color:#7c3aed; box-shadow:0 0 0 3px rgba(124,58,237,0.10); }
+input::placeholder { color:#c4b5fd; font-weight:600; }
+
+.btn-login {
+  width:100%; padding:13px; margin-top:8px;
+  background:#2e1065; color:white; border:none; border-radius:12px;
+  font-size:14px; font-weight:900; font-family:'Poppins',sans-serif;
+  cursor:pointer; transition:all 0.2s;
+  box-shadow:0 4px 20px rgba(46,16,101,0.25); letter-spacing:1px;
+}
+.btn-login:hover { background:#7c3aed; transform:translateY(-1px); box-shadow:0 6px 24px rgba(124,58,237,0.35); }
+.btn-login:disabled { opacity:.55; cursor:not-allowed; transform:none; }
+
+.msg { font-size:12px; font-weight:800; padding:10px 14px; border-radius:8px; margin-top:14px; display:none; align-items:center; gap:8px; }
+.msg.error   { background:#ede9fe; color:#2e1065; display:flex; border:2px solid #7c3aed; }
+.msg.success { background:#ede9fe; color:#2e1065; display:flex; border:2px solid #5b21b6; }
+
+.demo-box { margin-top:20px; padding:14px; background:#f5f3ff; border:2px solid #c4b5fd; border-radius:12px; font-size:12px; }
+.demo-box strong { display:block; margin-bottom:8px; font-size:11px; font-weight:900; color:#2e1065; letter-spacing:1px; text-transform:uppercase; }
+.demo-cred { display:flex; gap:8px; flex-wrap:wrap; }
+.cred-item {
+  font-family:'Share Tech Mono',monospace;
+  background:white; color:#2e1065;
+  padding:4px 10px; border-radius:6px;
+  border:2px solid #c4b5fd; cursor:pointer; transition:all 0.2s; font-size:11px; font-weight:700;
+}
+.cred-item:hover { background:#ede9fe; border-color:#7c3aed; }
+
+.footer { text-align:center; margin-top:20px; font-size:11px; font-weight:800; color:#7c3aed; letter-spacing:1px; font-family:'Share Tech Mono',monospace; }
+</style>
+</head>
+<body>
+<div class="login-wrap">
+  <div class="brand">
+    <div class="brand-logo">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+    </div>
+    <div class="brand-name">CyberIRS</div>
+    <div class="brand-sub">Incident Response System</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Welcome back 👋</div>
+    <div class="card-sub">Sign in to access the dashboard</div>
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" id="username" placeholder="Enter your username" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
+    </div>
+    <button class="btn-login" id="login-btn" onclick="doLogin()">Sign In →</button>
+    <div class="msg" id="msg"></div>
+    <div class="demo-box">
+      <strong>Demo Credentials</strong>
+      <div class="demo-cred">
+        <span class="cred-item" onclick="fill('admin','admin123')">admin </span>
+        <span class="cred-item" onclick="fill('analyst','analyst123')">analyst </span>
+      </div>
+    </div>
+  </div>
+  <div class="footer">CyberIRS v2.0 &nbsp;·&nbsp; Cybersecurity Incident Response System</div>
+</div>
+<script>
+function fill(u,p){ document.getElementById('username').value=u; document.getElementById('password').value=p; }
+document.addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+async function doLogin(){
+  const username=document.getElementById('username').value.trim();
+  const password=document.getElementById('password').value.trim();
+  const btn=document.getElementById('login-btn'); const msg=document.getElementById('msg');
+  if(!username||!password){ showMsg('Please enter username and password.','error'); return; }
+  btn.disabled=true; btn.textContent='Signing in...'; msg.className='msg';
+  try{
+    const res=await fetch('/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password})});
+    const data=await res.json();
+    if(data.success){ showMsg('Access granted! Redirecting...','success'); setTimeout(()=>window.location.href='/',800); }
+    else{ showMsg(data.error||'Invalid credentials.','error'); btn.disabled=false; btn.textContent='Sign In →'; }
+  }catch(e){ showMsg('Connection error. Is the server running?','error'); btn.disabled=false; btn.textContent='Sign In →'; }
+}
+function showMsg(text,type){ const el=document.getElementById('msg'); el.textContent=text; el.className='msg '+type; }
+</script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberIRS — Dashboard</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+</head>
+<body>
+
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+    </div>
+    <span class="brand-name">CyberIRS</span>
+  </div>
+
+  <nav class="nav">
+    <a class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item" data-page="incidents" onclick="navigate('incidents')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Incidents
+      <span class="badge-count" id="nav-open">0</span>
+    </a>
+    <a class="nav-item" data-page="alerts" onclick="navigate('alerts')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+      Alerts
+      <span class="badge-count red" id="nav-alerts">0</span>
+    </a>
+    <a class="nav-item" data-page="charts" onclick="navigate('charts')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Charts
+    </a>
+    <a class="nav-item" data-page="attackers" onclick="navigate('attackers')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Repeat Attackers
+    </a>
+    <a class="nav-item" data-page="report" onclick="navigate('report')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Response Report
+    </a>
+    <a class="nav-item" data-page="audit" onclick="navigate('audit')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      Audit Log
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="conn-dot" id="conn-dot"></div>
+    <span id="conn-label">Connecting...</span>
+    <a href="/logout" class="logout-btn" title="Logout">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </a>
+  </div>
+</aside>
+
+
+<main class="main">
+
+  <!-- HEADER -->
+  <header class="topbar">
+    <div>
+      <h1 class="page-title" id="page-title">Dashboard</h1>
+      <p class="page-sub" id="page-sub">Overview of all incidents and threats</p>
+    </div>
+    <div class="topbar-actions">
+      <span class="user-pill" id="user-pill">👤 admin</span>
+      <button class="btn-refresh" onclick="refreshCurrent()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        Refresh
+      </button>
+      <a href="/api/export/incidents" class="btn-export">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export CSV
+      </a>
+      <button class="btn-primary" onclick="openAddModal()">+ Add Incident</button>
+    </div>
+  </header>
+
+  
+  <section id="page-dashboard" class="page active">
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-icon blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div><div class="stat-label">Total Incidents</div><div class="stat-value" id="s-total">—</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon red"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>
+        <div><div class="stat-label">Open / In Progress</div><div class="stat-value red" id="s-open">—</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg></div>
+        <div><div class="stat-label">Unacked Critical Alerts</div><div class="stat-value amber" id="s-alerts">—</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div><div class="stat-label">Avg Threat Score</div><div class="stat-value green" id="s-avg">—</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Threat Dashboard</span>
+        <label class="toggle-wrap">
+          <input type="checkbox" id="urgent-toggle" onchange="loadDashboard()">
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          Urgent only
+        </label>
+      </div>
+      <div id="dashboard-table" class="table-wrap"></div>
+    </div>
+  </section>
+
+
+  <section id="page-incidents" class="page">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">All Incidents</span>
+        <div class="filters">
+          <select id="f-status" onchange="loadIncidents()">
+            <option value="">All Statuses</option>
+            <option value="Open">Open</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Resolved">Resolved</option>
+            <option value="Closed">Closed</option>
+          </select>
+          <input type="number" id="f-score" placeholder="Min Score" min="0" max="100"
+                 oninput="loadIncidents()" style="width:110px">
+        </div>
+      </div>
+      <div id="incidents-table" class="table-wrap"></div>
+    </div>
+  </section>
+
+
+  <section id="page-alerts" class="page">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Unacknowledged Critical Alerts</span>
+      </div>
+      <div id="alerts-table" class="table-wrap"></div>
+    </div>
+  </section>
+
+
+  <section id="page-charts" class="page">
+    <div class="charts-grid">
+      <div class="card chart-card">
+        <div class="card-header"><span class="card-title">Attacks by Type</span></div>
+        <div class="chart-wrap"><canvas id="chart-pie"></canvas></div>
+      </div>
+      <div class="card chart-card">
+        <div class="card-header"><span class="card-title">Incidents by Status</span></div>
+        <div class="chart-wrap"><canvas id="chart-status"></canvas></div>
+      </div>
+      <div class="card chart-card chart-wide">
+        <div class="card-header"><span class="card-title">Incidents Over Time (Last 14 Days)</span></div>
+        <div class="chart-wrap"><canvas id="chart-bar"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="page-attackers" class="page">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Repeat Attackers</span>
+        <div class="filters">
+          <label style="font-size:13px;color:var(--muted)">Min incidents:</label>
+          <input type="number" id="f-threshold" value="1" min="1" style="width:80px"
+                 oninput="loadAttackers()">
+        </div>
+      </div>
+      <div id="attackers-table" class="table-wrap"></div>
+    </div>
+  </section>
+
+
+  <section id="page-report" class="page">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Response Time Report</span>
+        <div class="filters">
+          <select id="f-team" onchange="loadReport()">
+            <option value="">All Teams</option>
+          </select>
+        </div>
+      </div>
+      <div id="report-table" class="table-wrap"></div>
+    </div>
+  </section>
+
+  <!-- ── PAGE: AUDIT LOG ── -->
+  <section id="page-audit" class="page">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Audit Log</span></div>
+      <div id="audit-table" class="table-wrap"></div>
+    </div>
+  </section>
+
+</main>
+
+
+<div id="modal-overlay" class="modal-overlay" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span>Add New Incident</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>System</label><select id="m-system"></select></div>
+        <div class="form-group"><label>Attack Type</label><select id="m-attack"></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Attacker IP</label><input id="m-ip" placeholder="e.g. 203.0.113.55"></div>
+        <div class="form-group"><label>Threat Score (0–100)</label><input id="m-score" type="number" min="0" max="100" value="70"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Status</label>
+          <select id="m-status"><option>Open</option><option>In Progress</option><option>Resolved</option><option>Closed</option></select>
+        </div>
+        <div class="form-group"><label>Team</label><select id="m-team"><option value="">Unassigned</option></select></div>
+      </div>
+      <div class="form-group" style="margin-top:10px">
+        <label>Description</label>
+        <textarea id="m-desc" rows="3" placeholder="Describe the incident..."></textarea>
+      </div>
+      <div id="m-msg" class="form-msg"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="submitIncident()">Submit Incident</button>
+    </div>
+  </div>
+</div>
+
+
+<div id="edit-overlay" class="modal-overlay" onclick="closeEdit()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span id="edit-title">Edit Incident</span>
+      <button class="modal-close" onclick="closeEdit()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="e-id">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Status</label>
+          <select id="e-status"><option>Open</option><option>In Progress</option><option>Resolved</option><option>Closed</option></select>
+        </div>
+        <div class="form-group"><label>Threat Score</label><input id="e-score" type="number" min="0" max="100"></div>
+      </div>
+      <div class="form-group" style="margin-top:10px"><label>Description</label><textarea id="e-desc" rows="3"></textarea></div>
+      <div id="e-msg" class="form-msg"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeEdit()">Cancel</button>
+      <button class="btn-primary" onclick="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+
+<div id="toast" class="toast"></div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
